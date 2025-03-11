@@ -16,14 +16,14 @@ cd API_Challenge
 
 ### 2.Set up virtual environment
 #### On macOS/Linux
-python3 -m venv venv
+python3 -m venv venv \
 source .venv/bin/activate
 
 #### On Windows
-python -m venv venv
+python -m venv venv \
 venv\Scripts\activate
 
-### 3. Install dependencies
+### 3. Install dependencies (if needed)
 pip install flask requests
 
 ## Running the API
