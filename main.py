@@ -57,7 +57,7 @@ def deleteClient(id):
         
     return {"error" : "Client ID not found"}
 
-#Gets user info from third-party API
+#Gets info from third-party API
 @app.route('/users/<int:id>/aggregated-info', methods = ['GET'])
 def getUserInfo(id):
     getUser()
@@ -67,6 +67,7 @@ def getUserInfo(id):
 
     return aggregated
 
+#Gets user info from third-party API
 def getUser():
     url = f'{base_url}/users/{userID}'
     response = requests.get(url)
@@ -76,6 +77,7 @@ def getUser():
     else:
         print(f"Failed to retrieve data {response.status_code}")
 
+#Gets accounts info from third-party API
 def getAccounts():
     url = f'{base_url}/accounts/{userID}'
     response = requests.get(url)
@@ -85,6 +87,7 @@ def getAccounts():
     else:
         print(f"Failed to retrieve data {response.status_code}")
 
+#Gets cards info from third-party API
 def getCards():
     url = f'{base_url}/cards/{userID}'
     response = requests.get(url)
@@ -94,6 +97,7 @@ def getCards():
     else:
         print(f"Failed to retrieve data {response.status_code}")
 
+#Gets transactions info from third-party API
 def getTransactions():
     url = f'{base_url}/transactions/{userID}'
     response = requests.get(url)
