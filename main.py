@@ -1,13 +1,15 @@
 from flask import Flask, jsonify, request
+import requests, random
 
 base_url = "https://dev.api.gabriel.money/backend-challenge/"
 userID = '375b799c-d2d4-4290-ba8a-3f32d4f5ca92'
-userInfo = []
+aggregated = {"userInfo" : "", "accountsInfo" : "", "cardsInfo" : "", "transactionsInfo" : ""}
+#userInfo = [{}]
 
 app = Flask(__name__)
 
-clients = [{"userId": "abcd", "first_name": " John", "last_name": "Doe", "email": "john.doe@example.com", "phone_number": "+19709456544"},
-          {"userId": "efgh", "first_name": " Timothy", "last_name": "Cook", "email": "tim.cook@example.com", "phone_number": "+19709758544"}
+clients = [{"userId": "1234", "first_name": " John", "last_name": "Doe", "email": "john.doe@example.com", "phone_number": "+19709456544"},
+          {"userId": "5678", "first_name": " Timothy", "last_name": "Cook", "email": "tim.cook@example.com", "phone_number": "+19709758544"}
 ]
 
 #Returns a list with all the clients
@@ -27,14 +29,15 @@ def getClient(id):
 #Adds new client to the list
 @app.route('/users', methods = ['POST'])
 def addClient():
-    new_client = {"userId": "", "first_name": request.json["first_name"], "last_name": request.json["last_name"], "email": request.json["email"], "phone_number": request.json["phone_number"]}
+    newId = random.randint(1000, 9999)
+    new_client = {"userId": newId, "first_name": request.json["first_name"], "last_name": request.json["last_name"], "email": request.json["email"], "phone_number": request.json["phone_number"]}
     clients.append(new_client)
-    return {"userID" : ""}
+    return {"userID" : newId}
 
 
 #Updates client information
 @app.route('/users/<int:id>', methods = ['PUT'])
-def getClient(id):
+def updateClient(id):
     updates = request.json.keys()
     for client in clients:
         if client["userId"] == id:
@@ -56,49 +59,47 @@ def deleteClient(id):
 
 #Gets user info from third-party API
 @app.route('/users/<int:id>/aggregated-info', methods = ['GET'])
-def deleteClient(id):
+def getUserInfo(id):
     getUser()
     getAccounts()
     getCards()
     getTransactions()
 
-    return userInfo
-
-    #return {"error" : "Client ID not found"}
+    return aggregated
 
 def getUser():
     url = f'{base_url}/users/{userID}'
-    response = request.get(url)
+    response = requests.get(url)
 
     if response.status_code == 200:
-        userInfo.append(response.json())
+        aggregated.update({"userInfo" : response.json()})
     else:
         print(f"Failed to retrieve data {response.status_code}")
 
 def getAccounts():
     url = f'{base_url}/accounts/{userID}'
-    response = request.get(url)
+    response = requests.get(url)
 
     if response.status_code == 200:
-        userInfo.append(response.json())
+        aggregated.update({"accountsInfo" : response.json()})
     else:
         print(f"Failed to retrieve data {response.status_code}")
 
 def getCards():
     url = f'{base_url}/cards/{userID}'
-    response = request.get(url)
+    response = requests.get(url)
 
     if response.status_code == 200:
-        userInfo.append(response.json())
+        aggregated.update({"cardsInfo" : response.json()})
     else:
         print(f"Failed to retrieve data {response.status_code}")
 
 def getTransactions():
     url = f'{base_url}/transactions/{userID}'
-    response = request.get(url)
+    response = requests.get(url)
 
     if response.status_code == 200:
-        userInfo.append(response.json())
+        aggregated.update({"transactionsInfo" : response.json()})
     else:
         print(f"Failed to retrieve data {response.status_code}")
 
